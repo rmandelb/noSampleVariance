@@ -17,6 +17,7 @@
 \newcommand{\hgpc}{$h^{-1}$Gpc}
 \newcommand{\hmpc}{$h^{-1}$Mpc}
 \newcommand{\hkpc}{$h^{-1}$kpc}
+\newcommand{\kv}{\mathbf{k}}
 % \newcommand{\beq}{\begin{equation}}
 % \newcommand{\eeq}{\end{equation}}
 
@@ -24,6 +25,8 @@
 \newcommand{\skyangle}{\phi}
 %%% Initial conditions of the cosmological mass density
 \newcommand{\rhoic}{\rho^{\rm IC}}
+%%% Normal distribution
+\newcommand{\normdist}{\mathcal{N}}
 
 %=====================================================================
 % FRONT MATTER
@@ -115,6 +118,29 @@ Because the traditional two-point function estimator averages over the phases
 of the mass density, we primarily care about the phases of the super-survey 
 modes. This is the `super-sample covariance' discussed by 
 \citet{takada2013}.
+
+We're really interested in how the 3D mass density fluctuations change the
+shear correlation function, the halo mass function, \emph{and their 
+cross-covariances}. But, we can make a reasonable simplifying assumption that 
+the effect of un-marginalized mass density fluctuations is to change the mean density 
+in an observed survey volume. 
+\begin{equation}
+	P(k) \rightarrow P(k) \left(
+	1 + \frac{\partial \ln P(k)}{\partial \delta_b} \delta_b\right)
+\end{equation}
+
+\begin{equation}
+	\delta_b \sim \normdist
+	\left(0, \left(\sigma_W^L\right)^{2}\right)
+\end{equation}
+where,
+\begin{equation}
+	\left(\sigma_{W}^{L}\right)^{2} \equiv
+	\frac{1}{V_{W}^{2}} 
+	\int \frac{d^{2}\kv}{(2\pi)^3}
+	\left|W(\kv)\right|^{2}
+	P^{L}(k).
+\end{equation}
 
 For the 2-halo term~\citep[eq. 39 of][]{takada2013}, 
 \begin{equation}
