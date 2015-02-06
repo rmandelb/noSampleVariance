@@ -11,6 +11,8 @@
 % AMS-LaTeX package for e.g. subequations
 \usepackage{amsmath}
 
+\newcommand{\beq}{\begin{equation}}
+\newcommand{\eeq}{\end{equation}}
 \newcommand{\hmsun}{\ensuremath{h^{-1}M_{\odot}}}
 \newcommand{\hgpc}{$h^{-1}$Gpc}
 \newcommand{\hmpc}{$h^{-1}$Mpc}
@@ -32,7 +34,6 @@
 %=====================================================================
 % BEGIN DOCUMENT
 %=====================================================================
-
 \begin{document}
 
 \title{Reducing sample variance in covariances}
@@ -48,7 +49,55 @@ Sarah will fill this in.  Rely on picture of first board and top of second board
 
 \section{Math}
 
-Framework with probabilities involving ICs.
+Basic framework:
+\beq
+P(\vec{d}|\theta) = \int \mathrm{d}\rho^\text{IC}\int \mathrm{d}\rho(t) P(\vec{d}|\rho(t),\theta)
+P(\rho(t)|\rho^\text{IC},\theta) P(\rho^\text{IC}|\theta).
+\eeq
+Here $\vec{d}$ is the data vector (e.g., the galaxy distribution and its properties, perhaps encoded
+as cosmic shear correlation function or the galaxy 2-point
+correlation function), $\theta$ are the cosmological parameters, $\rho^\text{IC}$ are the initial
+conditions ($\rho^\text{IC}=\rho(t=\text{early})$), and $\rho(t)$ is the density at late times where we measure cosmic
+shear.  
+$P(\rho^\text{IC}|\theta)$ is a Gaussian random variable with mean $0$, which we can write as $N(0,S(\theta))$.  The key point is that
+$P(\rho(t)|\rho^\text{IC},\theta)$ is purely deterministic (ignoring baryonic physics) - it's just
+gravity acting on the matter distributed in a universe that is growing in a way determined by the
+cosmological parameters.  So really it's a delta function,
+\beq
+P(\rho(t)|\rho^\text{IC},\theta) = \delta_D(\rho(t)-G(\rho^\text{IC}))
+\eeq 
+where we use $G$ to indicate the actions of gravity.  We use the delta function to eliminate one
+integral, over $\rho(t)$, and get
+\beq
+P(\vec{d}|\theta) = \int \mathrm{d}\rho^\text{IC}  P(\vec{d}|\rho^\text{IC},\theta)N(0,S(\theta)).
+\eeq
+The basic idea is then to get a smaller variance by using some external data, such as massive
+cluster counts, to get some idea of the ICs for the survey region.  In that case, we multiply by an
+additional $P(d_\text{external}|\rho^\text{IC},\theta)$.
+
+Without using that external information, we can write the uncertainty on $P(\vec{d}|\theta)$
+determined using $N$ simulations as
+\beq
+\text{Error}(P(\vec{d}|\theta)) \sim \frac{\text{Var}(P(\vec{d}|\rho^\text{IC},\theta))}{N}.
+\eeq
+Using that external information, it becomes
+\beq
+\text{Error}(P(\vec{d}|\theta)) \sim \frac{\text{Var}(P(\vec{d},d_\text{external}|\rho^\text{IC},\theta))}{N}.
+\eeq
+So if the variance is significantly smaller, then we might achieve a similar error on our
+covariances with fewer simulations.
+
+Note that part of this calculation is the fact that
+\beq
+P(\vec{d},d_\text{external}|\rho^\text{IC},\theta) = P(\vec{d})P(d_\text{external}).
+\eeq
+The actual signals (the observed $\vec{d}$ and $d_\text{external}$) should ideally be highly
+correlated, but their {\em uncertainties} should not.  For example, if the external info are counts
+of high mass clusters, then the noise comes from Poisson error on X-ray counts or something like
+that.  This is unrelated to shape noise in cosmic shear.
+
+
+Second board
 
 Specific case: external data is cluster counts.  Observed data is shear correlation function.  Need
 1h and 2h in principle but we might limit ourselves to one or the other as is convenient.
