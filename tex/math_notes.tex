@@ -30,6 +30,8 @@
 \newcommand{\normdist}{\mathcal{N}}
 %%% Mean number density
 \newcommand{\nbar}{\bar{n}}
+%%% Mass threshold for cluster number counts
+\newcommand{\mth}{M_{\rm th}}
 
 %=====================================================================
 % FRONT MATTER
@@ -211,6 +213,18 @@ sky can be approximated as,
 \end{equation}
 where $b_{h}(m,z)$ is the linear halo bias and
 $\delta(\xv,z)$ is the mass overdensity.
+
+We will use observations of the number of clusters above a 
+specified mass threshold $\mth$,
+\begin{equation}
+	\bar{N}(z) \equiv
+	\int_{\mth}^{\infty} dm\, 
+	\nbar_{h}(m,z)
+	\left[
+	1 + b_{h}(m,z)
+	\int d^{3}x\, W(\xv) \delta(\xv)
+	\right]
+\end{equation}
 
 % subsection dependence_on_mass_density_phases (end)
 
