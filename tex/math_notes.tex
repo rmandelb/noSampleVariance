@@ -18,6 +18,7 @@
 \newcommand{\hmpc}{$h^{-1}$Mpc}
 \newcommand{\hkpc}{$h^{-1}$kpc}
 \newcommand{\kv}{\mathbf{k}}
+\newcommand{\xv}{\mathbf{x}}
 % \newcommand{\beq}{\begin{equation}}
 % \newcommand{\eeq}{\end{equation}}
 
@@ -27,6 +28,8 @@
 \newcommand{\rhoic}{\rho^{\rm IC}}
 %%% Normal distribution
 \newcommand{\normdist}{\mathcal{N}}
+%%% Mean number density
+\newcommand{\nbar}{\bar{n}}
 
 %=====================================================================
 % FRONT MATTER
@@ -108,6 +111,10 @@ Specific case: external data is cluster counts.  Observed data is shear correlat
 Equations we wrote for each component.
 
 
+\subsection{Halo mass function}
+\citet{lima2004} present the probability distribution of the cluster number counts.
+
+
 \subsection{Dependence on mass density phases} % (fold)
 \label{sub:dependence_on_mass_density_phases}
 We need to calculate the shear two-point function $\xi(\skyangle, \rhoic)$, 
@@ -119,6 +126,7 @@ of the mass density, we primarily care about the phases of the super-survey
 modes. This is the `super-sample covariance' discussed by 
 \citet{takada2013}.
 
+\subsubsection{Power spectrum fluctuations}
 We're really interested in how the 3D mass density fluctuations change the
 shear correlation function, the halo mass function, \emph{and their 
 cross-covariances}. But, we can make a reasonable simplifying assumption that 
@@ -148,8 +156,15 @@ For the 2-halo term~\citep[eq. 39 of][]{takada2013},
 	\frac{68}{21}
 \end{equation}
 
-\subsubsection{Halo mass function}
-\citet{lima2004} present the probability distribution of the cluster number counts.
+\subsubsection{Cluster counts fluctuations}
+The number density of clusters of a given mass $m$ and redshift $z$ over the 
+sky can be approximated as,
+\begin{equation}
+	n_{h}(\xv, m, z) \approx \nbar_{h}(m, z)
+	\left[1 + b_{h}(m,z) \delta(\xv, z)\right],
+\end{equation}
+where $b_{h}(m,z)$ is the linear halo bias and
+$\delta(\xv,z)$ is the mass overdensity.
 
 % subsection dependence_on_mass_density_phases (end)
 
