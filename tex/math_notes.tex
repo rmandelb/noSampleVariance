@@ -15,8 +15,13 @@
 \newcommand{\hgpc}{$h^{-1}$Gpc}
 \newcommand{\hmpc}{$h^{-1}$Mpc}
 \newcommand{\hkpc}{$h^{-1}$kpc}
-\newcommand{\beq}{\begin{equation}}
-\newcommand{\eeq}{\end{equation}}
+% \newcommand{\beq}{\begin{equation}}
+% \newcommand{\eeq}{\end{equation}}
+
+%%% Angular positions on the sky
+\newcommand{\skyangle}{\phi}
+%%% Initial conditions of the cosmological mass density
+\newcommand{\rhoic}{\rho^{\rm IC}}
 
 %=====================================================================
 % FRONT MATTER
@@ -50,4 +55,28 @@ Specific case: external data is cluster counts.  Observed data is shear correlat
 
 Equations we wrote for each component.
 
+
+\subsection{Dependence on mass density phases} % (fold)
+\label{sub:dependence_on_mass_density_phases}
+We need to calculate the shear two-point function $\xi(\skyangle, \rhoic)$, 
+the halo mass function $n(m, \rhoic)$
+and the halo bias $b(m, \rhoic)$ as functions of the initial conditions of the 
+cosmological mass density $\rhoic$. 
+Because the traditional two-point function estimator averages over the phases 
+of the mass density, we primarily care about the phases of the super-survey 
+modes. This is the `super-sample covariance' discussed by 
+\citet{takada2013}.
+
+For the 2-halo term~\citep[eq. 39 of][]{takada2013}, 
+\begin{equation}
+	\frac{\partial \ln P(k)}{\partial \delta_b} \approx 
+	\frac{68}{21}
+\end{equation}
+
+% subsection dependence_on_mass_density_phases (end)
+
+\bibliographystyle{apj}
+\bibliography{noSampleVariance}
+
 \end{document}
+% 
