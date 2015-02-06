@@ -57,7 +57,7 @@ Sarah will fill this in.  Rely on picture of first board and top of second board
 
 \section{Math}
 
-Basic framework:
+\subsection{Basic framework}
 \beq
 P(\vec{d}|\theta) = \int \mathrm{d}\rho^\text{IC}\int \mathrm{d}\rho(t) P(\vec{d}|\rho(t),\theta)
 P(\rho(t)|\rho^\text{IC},\theta) P(\rho^\text{IC}|\theta).
@@ -66,7 +66,7 @@ Here $\vec{d}$ is the data vector (e.g., the galaxy distribution and its propert
 as cosmic shear correlation function or the galaxy 2-point
 correlation function), $\theta$ are the cosmological parameters, $\rho^\text{IC}$ are the initial
 conditions ($\rho^\text{IC}=\rho(t=\text{early})$), and $\rho(t)$ is the density at late times where we measure cosmic
-shear.  
+shear.  All $\rho$ are also implicitly a function of position.
 $P(\rho^\text{IC}|\theta)$ is a Gaussian random variable with mean $0$, which we can write as $N(0,S(\theta))$.  The key point is that
 $P(\rho(t)|\rho^\text{IC},\theta)$ is purely deterministic (ignoring baryonic physics) - it's just
 gravity acting on the matter distributed in a universe that is growing in a way determined by the
@@ -81,10 +81,20 @@ P(\vec{d}|\theta) = \int \mathrm{d}\rho^\text{IC}  P(\vec{d}|\rho^\text{IC},\the
 \eeq
 The basic idea is then to get a smaller variance by using some external data, such as massive
 cluster counts, to get some idea of the ICs for the survey region.  In that case, we multiply by an
-additional $P(d_\text{external}|\rho^\text{IC},\theta)$.
+additional $P(d_\text{external}|\rho^\text{IC},\theta)$.  We then get
+\beq
+P(\vec{d},d_\text{external}|\rho^\text{IC},\theta) = P(\vec{d}|\rho^\text{IC},\theta)P(d_\text{external}|\rho^\text{IC},\theta).
+\eeq
+The actual signals (the observed $\vec{d}$ and $d_\text{external}$) should ideally be highly
+correlated, but their {\em uncertainties} should not.  For example, if the external info are counts
+of high mass clusters, then the noise comes from Poisson error on X-ray counts or something like
+that.  This is unrelated to shape noise in cosmic shear.
 
-Without using that external information, we can write the uncertainty on $P(\vec{d}|\theta)$
-determined using $N$ simulations as
+
+Let's say we want to evaluate the integral using Monte Carlo integration, where we carry out the
+Monte Carlo integration using $N$ samples (in practice from $N$ simulations).  Without using that
+external information, we can write the uncertainty on $P(\vec{d}|\theta)$ determined using $N$
+simulations as
 \beq
 \text{Error}(P(\vec{d}|\theta)) \sim \frac{\text{Var}(P(\vec{d}|\rho^\text{IC},\theta))}{N}.
 \eeq
@@ -93,24 +103,58 @@ Using that external information, it becomes
 \text{Error}(P(\vec{d}|\theta)) \sim \frac{\text{Var}(P(\vec{d},d_\text{external}|\rho^\text{IC},\theta))}{N}.
 \eeq
 So if the variance is significantly smaller, then we might achieve a similar error on our
-covariances with fewer simulations.
+covariances with fewer simulations.  Note that this (reducing the error of Monte Carlo integration)
+is not the goal of this project, really; we actually want to reduce the variance on our cosmological
+model parameters in a real data analysis.  We're just using this formalism to get a rough estimate
+on how much external data might help us.
 
-Note that part of this calculation is the fact that
+So to summarize, if we can evaluate something like
 \beq
-P(\vec{d},d_\text{external}|\rho^\text{IC},\theta) = P(\vec{d})P(d_\text{external}).
+\frac{\text{Var}(P(\vec{d},d_\text{external}|\rho^\text{IC},\theta))}{\text{Var}(P(\vec{d}|\rho^\text{IC},\theta))}
 \eeq
-The actual signals (the observed $\vec{d}$ and $d_\text{external}$) should ideally be highly
-correlated, but their {\em uncertainties} should not.  For example, if the external info are counts
-of high mass clusters, then the noise comes from Poisson error on X-ray counts or something like
-that.  This is unrelated to shape noise in cosmic shear.
+then that tells us the fractional increase in the number of simulations needed for covariance
+estimation.  i.e., if this ratio is $1$ then the extra information doesn't help, if this ratio is
+$0.5$ then we need half as many sims, and so on.
 
+\subsection{An example case}
 
-Second board
+We are going to consider the case that the data vector is cosmic shear
+\beq
+\vec{d} = \hat{\xi}_+(\phi)
+\eeq
+and the external data are the counts of clusters above a mass threshold
+\beq
+d_\text{external} = \hat{n}_\text{clust}(M>M_\text{min} | \rho^\text{IC}) =
+\int_{M_\text{min}}^{\infty} n(M)\,\mathrm{d}M.
+\eeq
 
-Specific case: external data is cluster counts.  Observed data is shear correlation function.  Need
-1h and 2h in principle but we might limit ourselves to one or the other as is convenient.
+In this case,
+\beq
+P(\vec{d}|\rho^\text{IC},\theta) = N(\xi_+(G(\rho^\text{IC},\theta), \phi), \sigma^2_\gamma(\phi)).
+\eeq
+Here it's important to keep in mind that this is not $\bar{\xi}_+$, the expected average correlation
+function for a given cosmology.  It is the specific $\xi$ {\em for the given set of ICs}. The
+variance $\sigma^2_\gamma(\phi)$ is just shape noise.  For simplicity we might consider halo model
+approximations for the 1-halo and 2-halo terms for the cosmic shear as written in the Mo et al. book
+that Sukhdeep found.  
 
-Equations we wrote for each component.
+Likewise,
+\beq
+P(d_\text{external}|\rho^\text{IC},\theta) = N(\hat{n}_\text{clust}(M>M_\text{min} |
+\rho^\text{IC}), \text{uncertainty based on cluster detection method}).
+\eeq
+We need to figure out that uncertainty.
+
+Then we can write
+\beq
+P(\vec{d}|\rho^\text{IC},\theta)P(d_\text{external}|\rho^\text{IC},\theta)P(\rho^\text{IC}|\theta)
+\propto P(\rho^\text{IC}|\vec{d},d_\text{external},\theta)
+\eeq
+\beq
+\int \mathrm{d}\rho^\text{IC} P(\rho^\text{IC}|\vec{d},d_\text{external},\theta) = P(\vec{d}|\theta,
+d_\text{external}).
+\eeq
+
 
 
 \subsection{Halo mass function}
