@@ -122,7 +122,8 @@ $0.5$ then we need half as many sims, and so on.
 
 We are going to consider the case that the data vector is cosmic shear
 \beq
-\vec{d} = \hat{\xi}_+(\phi)
+%\vec{d} = \hat{\xi}_+(\phi)
+\vec{d} = \hat{C}(\ell)
 \eeq
 and the external data are the counts of clusters above a mass threshold
 \beq
@@ -156,6 +157,15 @@ P(\vec{d}|\rho^\text{IC},\theta)P(d_\text{external}|\rho^\text{IC},\theta)P(\rho
 \int \mathrm{d}\rho^\text{IC} P(\rho^\text{IC}|\vec{d},d_\text{external},\theta) = P(\vec{d}|\theta,
 d_\text{external}).
 \eeq
+
+
+\subsection{Cosmic shear likelihood}
+
+
+\beq
+{\rm Cov}\{  C(\ell), C(\ell') \}= \delta_{\ell \ell'}\; \frac{4 \pi}{A_{\rm survey} \ell \Delta \ell}\; \left( C(\ell) + \frac{\sigma_\epsilon^2}{2 \bar{n}} \right)^2\;,
+\eeq
+where $\sigma_\epsilon$ is the dispersion if the complex ellipticity, and $\bar{n}$ the mean number density of the source galaxy sample.
 
 
 
