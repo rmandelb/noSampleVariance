@@ -68,7 +68,7 @@ Here $\vec{d}$ is the data vector (e.g., the galaxy distribution and its propert
 as cosmic shear correlation function or the galaxy 2-point
 correlation function), $\theta$ are the cosmological parameters, $\rho^\text{IC}$ are the initial
 conditions ($\rho^\text{IC}=\rho(t=\text{early})$), and $\rho(t)$ is the density at late times where we measure cosmic
-shear.  All $\rho$ are also implicitly a function of position.
+shear.  All $\rho$ are also implicitly a function of position. Strictly speaking, all $\rho$ are to be understood as the values of three-dimensional random fields at every point in space. If these fields are evaluated at $M$ points, these probability distributions can be approximated as $M$-dimensional distributions of $\rho$ values. 
 $P(\rho^\text{IC}|\theta)$ is a Gaussian random variable with mean $0$, which we can write as $N(0,S(\theta))$.  The key point is that
 $P(\rho(t)|\rho^\text{IC},\theta)$ is purely deterministic (ignoring baryonic physics) - it's just
 gravity acting on the matter distributed in a universe that is growing in a way determined by the
@@ -85,8 +85,9 @@ The basic idea is then to get a smaller variance by using some external data, su
 cluster counts, to get some idea of the ICs for the survey region.  In that case, we multiply by an
 additional $P(d_\text{external}|\rho^\text{IC},\theta)$.  We then get
 \beq
-P(\vec{d},d_\text{external}|\rho^\text{IC},\theta) = P(\vec{d}|\rho^\text{IC},\theta)P(d_\text{external}|\rho^\text{IC},\theta).
+P(\vec{d},d_\text{external}|\rho^\text{IC},\theta) = P(\vec{d}|\rho^\text{IC},\theta)P(d_\text{external}|\rho^\text{IC},\theta),
 \eeq
+assuming independent errors.
 The actual signals (the observed $\vec{d}$ and $d_\text{external}$) should ideally be highly
 correlated, but their {\em uncertainties} should not.  For example, if the external info are counts
 of high mass clusters, then the noise comes from Poisson error on X-ray counts or something like
@@ -117,6 +118,19 @@ So to summarize, if we can evaluate something like
 then that tells us the fractional increase in the number of simulations needed for covariance
 estimation.  i.e., if this ratio is $1$ then the extra information doesn't help, if this ratio is
 $0.5$ then we need half as many sims, and so on.
+
+The corresponding posteriors read
+\begin{align}
+P(\theta | \vec{d},d_\text{external},\rho^\text{IC}) &\propto P(\vec{d},d_\text{external}|\rho^\text{IC},\theta)\; P(\theta)\\
+P(\theta | \vec{d},\rho^\text{IC}) &\propto P(\vec{d}|\rho^\text{IC},\theta)\; P(\theta)\;,
+\end{align}
+where $P(\theta)$ is the prior. Another useful figure of merit is
+\beq
+\frac{\text{Var}(P(\theta_i | \vec{d},d_\text{external}|\rho^\text{IC}))}{\text{Var}(P(\theta_i | \vec{d}|\rho^\text{IC}))}
+\eeq
+for any parameter $i$. A generalised metric could be based on the ratio of the determinants of the parameter covariances.
+
+
 
 \subsection{An example case}
 
@@ -161,9 +175,13 @@ d_\text{external}).
 
 \subsection{Cosmic shear likelihood}
 
+\beq
+- \ln L = \frac{1}{2}\; \sum_{i,j=1}^{N_\ell} \left(  \hat{C}(\ell_i) - C_{\rm model}(\ell_i) \right)\; {\rm Cov}^{-1}\{  C(\ell_i), C(\ell_j) \}\; \left(  \hat{C}(\ell_j) - C_{\rm model}(\ell_j) \right)\;,
+\eeq
+where $N_\ell$ is the number of angular frequency bins.
 
 \beq
-{\rm Cov}\{  C(\ell), C(\ell') \}= \delta_{\ell \ell'}\; \frac{4 \pi}{A_{\rm survey} \ell \Delta \ell}\; \left( C(\ell) + \frac{\sigma_\epsilon^2}{2 \bar{n}} \right)^2\;,
+{\rm Cov}\{  C(\ell_i), C(\ell_j) \}= \delta_{ij}\; \frac{4 \pi}{A_{\rm survey} \ell_i \Delta \ell}\; \left( C(\ell_i) + \frac{\sigma_\epsilon^2}{2 \bar{n}} \right)^2\;,
 \eeq
 where $\sigma_\epsilon$ is the dispersion if the complex ellipticity, and $\bar{n}$ the mean number density of the source galaxy sample.
 
