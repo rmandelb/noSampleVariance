@@ -11,17 +11,22 @@
 % AMS-LaTeX package for e.g. subequations
 \usepackage{amsmath}
 
-\newcommand{\beq}{\begin{equation}}
-\newcommand{\eeq}{\end{equation}}
+% \newcommand{\begin{equation}}{\begin{equation}} 
+% \newcommand{\end{equation}}{\end{equation}}
+\newcommand{\half}{\frac{1}{2}}
 \newcommand{\hmsun}{\ensuremath{h^{-1}M_{\odot}}}
 \newcommand{\hgpc}{$h^{-1}$Gpc}
 \newcommand{\hmpc}{$h^{-1}$Mpc}
 \newcommand{\hkpc}{$h^{-1}$kpc}
 \newcommand{\kv}{\mathbf{k}}
 \newcommand{\xv}{\mathbf{x}}
-% \newcommand{\beq}{\begin{equation}}
-% \newcommand{\eeq}{\end{equation}}
+% \newcommand{\begin{equation}}{\begin{equation}}
+% \newcommand{\end{equation}}{\end{equation}}
 
+%%% Data vector
+\newcommand{\data}{\mathbf{d}}
+%%% 'External' data vector
+\newcommand{\dataext}{\data_{\rm ext}}
 %%% Angular positions on the sky
 \newcommand{\skyangle}{\phi}
 %%% Initial conditions of the cosmological mass density
@@ -32,6 +37,15 @@
 \newcommand{\nbar}{\bar{n}}
 %%% Mass threshold for cluster number counts
 \newcommand{\mth}{M_{\rm th}}
+%%% Signal covariance matrix
+\newcommand{\smat}{\mathsf{S}}
+%%% Noise covariance matrix
+\newcommand{\noisemat}{\mathsf{\Sigma}}
+%%% Transfer function relating the mass density to the data vector
+\newcommand{\transfer}{\mathsf{T}}
+%%% Inverse transfer function operator
+\newcommand{\invtransfer}{\mathsf{R}}
+
 
 %=====================================================================
 % FRONT MATTER
@@ -51,20 +65,23 @@
 Something or other.
 \end{abstract}
 
+% -------------------------------------------------------------------
 \section{Introduction}
 
 Sarah will fill this in.  Rely on picture of first board and top of second board as well as our
 discussions.  Actually I'm not sure how much info we need here, since 2.1 steps through the basic
 idea.  Skip this?
 
+% -------------------------------------------------------------------
 \section{Math}
 
+% -------------------------------------------------------------------
 \subsection{Basic framework}
-\beq
-P(\vec{d}|\theta) = \int \mathrm{d}\rho^\text{IC}\int \mathrm{d}\rho(t) P(\vec{d}|\rho(t),\theta)
-P(\rho(t)|\rho^\text{IC},\theta) P(\rho^\text{IC}|\theta).
-\eeq
-Here $\vec{d}$ is the data vector (e.g., the galaxy distribution and its properties, perhaps encoded
+\begin{equation}
+	P(\data|\theta) = \int \mathrm{d}\rho^\text{IC}\int \mathrm{d}\rho(t) P(\data|\rho(t),\theta)
+	P(\rho(t)|\rho^\text{IC},\theta) P(\rho^\text{IC}|\theta).
+\end{equation}
+Here $\data$ is the data vector (e.g., the galaxy distribution and its properties, perhaps encoded
 as cosmic shear correlation function or the galaxy 2-point
 correlation function), $\theta$ are the cosmological parameters, $\rho^\text{IC}$ are the initial
 conditions ($\rho^\text{IC}=\rho(t=\text{early})$), and $\rho(t)$ is the density at late times where we measure cosmic
@@ -73,21 +90,21 @@ $P(\rho^\text{IC}|\theta)$ is a Gaussian random variable with mean $0$, which we
 $P(\rho(t)|\rho^\text{IC},\theta)$ is purely deterministic (ignoring baryonic physics) - it's just
 gravity acting on the matter distributed in a universe that is growing in a way determined by the
 cosmological parameters.  So really it's a delta function,
-\beq
-P(\rho(t)|\rho^\text{IC},\theta) = \delta_D(\rho(t)-G(\rho^\text{IC}))
-\eeq 
+\begin{equation}
+	P(\rho(t)|\rho^\text{IC},\theta) = \delta_D(\rho(t)-G(\rho^\text{IC}))
+\end{equation} 
 where we use $G$ to indicate the actions of gravity.  We use the delta function to eliminate one
 integral, over $\rho(t)$, and get
-\beq
-P(\vec{d}|\theta) = \int \mathrm{d}\rho^\text{IC}  P(\vec{d}|\rho^\text{IC},\theta)N(0,S(\theta)).
-\eeq
+\begin{equation}
+	P(\data|\theta) = \int \mathrm{d}\rho^\text{IC}  P(\data|\rho^\text{IC},\theta)N(0,S(\theta)).
+\end{equation}
 The basic idea is then to get a smaller variance by using some external data, such as massive
 cluster counts, to get some idea of the ICs for the survey region.  In that case, we multiply by an
-additional $P(d_\text{external}|\rho^\text{IC},\theta)$.  We then get
-\beq
-P(\vec{d},d_\text{external}|\rho^\text{IC},\theta) = P(\vec{d}|\rho^\text{IC},\theta)P(d_\text{external}|\rho^\text{IC},\theta).
-\eeq
-The actual signals (the observed $\vec{d}$ and $d_\text{external}$) should ideally be highly
+additional $P(\dataext|\rho^\text{IC},\theta)$.  We then get
+\begin{equation}
+	P(\data,\dataext|\rho^\text{IC},\theta) = P(\data|\rho^\text{IC},\theta)P(\dataext|\rho^\text{IC},\theta).
+\end{equation}
+The actual signals (the observed $\data$ and $\dataext$) should ideally be highly
 correlated, but their {\em uncertainties} should not.  For example, if the external info are counts
 of high mass clusters, then the noise comes from Poisson error on X-ray counts or something like
 that.  This is unrelated to shape noise in cosmic shear.
@@ -95,15 +112,15 @@ that.  This is unrelated to shape noise in cosmic shear.
 
 Let's say we want to evaluate the integral using Monte Carlo integration, where we carry out the
 Monte Carlo integration using $N$ samples (in practice from $N$ simulations).  Without using that
-external information, we can write the uncertainty on $P(\vec{d}|\theta)$ determined using $N$
+external information, we can write the uncertainty on $P(\data|\theta)$ determined using $N$
 simulations as
-\beq
-\text{Error}(P(\vec{d}|\theta)) \sim \frac{\text{Var}(P(\vec{d}|\rho^\text{IC},\theta))}{N}.
-\eeq
+\begin{equation}
+	\text{Error}(P(\data|\theta)) \sim \frac{\text{Var}(P(\data|\rho^\text{IC},\theta))}{N}.
+\end{equation}
 Using that external information, it becomes
-\beq
-\text{Error}(P(\vec{d}|\theta)) \sim \frac{\text{Var}(P(\vec{d},d_\text{external}|\rho^\text{IC},\theta))}{N}.
-\eeq
+\begin{equation}
+	\text{Error}(P(\data|\theta)) \sim \frac{\text{Var}(P(\data,\dataext|\rho^\text{IC},\theta))}{N}.
+\end{equation}
 So if the variance is significantly smaller, then we might achieve a similar error on our
 covariances with fewer simulations.  Note that this (reducing the error of Monte Carlo integration)
 is not the goal of this project, really; we actually want to reduce the variance on our cosmological
@@ -111,30 +128,80 @@ model parameters in a real data analysis.  We're just using this formalism to ge
 on how much external data might help us.
 
 So to summarize, if we can evaluate something like
-\beq
-\frac{\text{Var}(P(\vec{d},d_\text{external}|\rho^\text{IC},\theta))}{\text{Var}(P(\vec{d}|\rho^\text{IC},\theta))}
-\eeq
+\begin{equation}
+	\frac{\text{Var}(P(\data,\dataext|\rho^\text{IC},\theta))}{\text{Var}(P(\data|\rho^\text{IC},\theta))}
+\end{equation}
 then that tells us the fractional increase in the number of simulations needed for covariance
 estimation.  i.e., if this ratio is $1$ then the extra information doesn't help, if this ratio is
 $0.5$ then we need half as many sims, and so on.
 
-\subsection{An example case}
+% -------------------------------------------------------------------
+\subsection{A Gaussian model}
+If we assume both the prior on the mass density and the likelihood functions of the data are 
+Gaussians, then the conditional distribution of the mass density is described by the Weiner filter 
+as we show next.
+
+We begin by asserting,
+\begin{align}
+	P(\rhoic | \theta) &\equiv \normdist_{\rhoic}(0, \smat(\theta))
+	\\
+	P(\data | \rhoic, \theta) &\equiv
+	\normdist_{\data}\left(\transfer_{\data}(\theta)\rhoic, \noisemat_{\data}\right)
+	\\
+	P(\dataext | \rhoic, \theta) &\equiv
+	\normdist_{\dataext}\left(\transfer_{\dataext}(\theta)\rhoic, \noisemat_{\dataext}\right),
+\end{align}
+where $\transfer$ is a transfer function that relates the initial mass density $\rhoic$ 
+to the data vector and $\noisemat$ are noise covariance matrices.
+
+Without any external data,
+\begin{align}
+	P(\data|\theta) &= 
+	\int d\rhoic\, P(\data | \rhoic,\theta) P(\rhoic|\theta)
+	\notag\\
+	&\propto \int d\rhoic\, 
+	% \left|\smat\right|^{-1/2} \left|\noisemat_{\data}\right|^{-1/2}
+	% \exp \left(-\half\left(\rhoic\right)\smat^{-1}\left(\rhoic\right)\right)
+	\normdist_{\rhoic} \left(
+	\invtransfer_{\data} \data,
+	\left(\transfer_{\data}^{T} \noisemat_{\data}^{-1} \transfer_{\data}\right)^{-1}
+	\right)
+	\normdist_{\rhoic} \left(
+	0, \smat
+	\right)
+	\notag\\
+	&= \normdist_{\data} \left(
+	0,
+	\transfer^{T}_{\data}
+	\left(
+	\smat +
+	\left(\transfer_{\data}^{T} \noisemat_{\data}^{-1} \transfer_{\data}\right)^{-1}
+	\right)
+	\transfer_{\data}
+	\right)
+\end{align}
+where $\invtransfer \equiv \transfer^{-1}$.
+This gives us the usual sample covariance plus noise covariance model for unbiased 
+tracers of the Gaussian density field.
+
+% -------------------------------------------------------------------
+\subsection{An example case in the nonlinear regime}
 
 We are going to consider the case that the data vector is cosmic shear
-\beq
-%\vec{d} = \hat{\xi}_+(\phi)
-\vec{d} = \hat{C}(\ell)
-\eeq
+\begin{equation}
+	%\data = \hat{\xi}_+(\phi)
+	\data = \hat{C}(\ell)
+\end{equation}
 and the external data are the counts of clusters above a mass threshold
-\beq
-d_\text{external} = \hat{n}_\text{clust}(M>M_\text{min} | \rho^\text{IC}) =
-\int_{M_\text{min}}^{\infty} n(M)\,\mathrm{d}M.
-\eeq
+\begin{equation}
+	\dataext = \hat{n}_\text{clust}(M>M_\text{min} | \rho^\text{IC}) =
+	\int_{M_\text{min}}^{\infty} n(M)\,\mathrm{d}M.
+\end{equation}
 
 In this case,
-\beq
-P(\vec{d}|\rho^\text{IC},\theta) = N(\xi_+(G(\rho^\text{IC},\theta), \phi), \sigma^2_\gamma(\phi)).
-\eeq
+\begin{equation}
+	P(\data|\rho^\text{IC},\theta) = N(\xi_+(G(\rho^\text{IC},\theta), \phi), \sigma^2_\gamma(\phi)).
+\end{equation}
 Here it's important to keep in mind that this is not $\bar{\xi}_+(\phi)$, the expected average correlation
 function for a given cosmology.  It is the specific $\xi_+(\phi)$ {\em for the given set of ICs}. The
 variance $\sigma^2_\gamma(\phi)$ is just shape noise.  For simplicity we might consider halo model
@@ -142,37 +209,38 @@ approximations for the 1-halo and 2-halo terms for the cosmic shear as written i
 that Sukhdeep found.  
 
 Likewise,
-\beq
-P(d_\text{external}|\rho^\text{IC},\theta) = N(\hat{n}_\text{clust}(M>M_\text{min} |
-\rho^\text{IC}), \text{uncertainty based on cluster detection method}).
-\eeq
+\begin{equation}
+	P(\dataext|\rho^\text{IC},\theta) = N(\hat{n}_\text{clust}(M>M_\text{min} |
+	\rho^\text{IC}), \text{uncertainty based on cluster detection method}).
+\end{equation}
 We need to figure out that uncertainty.
 
 Then we can write
-\beq
-P(\vec{d}|\rho^\text{IC},\theta)P(d_\text{external}|\rho^\text{IC},\theta)P(\rho^\text{IC}|\theta)
-\propto P(\rho^\text{IC}|\vec{d},d_\text{external},\theta)
-\eeq
-\beq
-\int \mathrm{d}\rho^\text{IC} P(\rho^\text{IC}|\vec{d},d_\text{external},\theta) = P(\vec{d}|\theta,
-d_\text{external}).
-\eeq
+\begin{equation}
+	P(\data|\rho^\text{IC},\theta)P(\dataext|\rho^\text{IC},\theta)P(\rho^\text{IC}|\theta)
+	\propto P(\rho^\text{IC}|\data,\dataext,\theta)
+\end{equation}
+\begin{equation}
+	\int \mathrm{d}\rho^\text{IC} P(\rho^\text{IC}|\data,\dataext,\theta) = P(\data|\theta,
+	\dataext).
+\end{equation}
 
 
+% -------------------------------------------------------------------
 \subsection{Cosmic shear likelihood}
 
 
-\beq
-{\rm Cov}\{  C(\ell), C(\ell') \}= \delta_{\ell \ell'}\; \frac{4 \pi}{A_{\rm survey} \ell \Delta \ell}\; \left( C(\ell) + \frac{\sigma_\epsilon^2}{2 \bar{n}} \right)^2\;,
-\eeq
+\begin{equation}
+	{\rm Cov}\{  C(\ell), C(\ell') \}= \delta_{\ell \ell'}\; \frac{4 \pi}{A_{\rm survey} \ell \Delta \ell}\; \left( C(\ell) + \frac{\sigma_\epsilon^2}{2 \bar{n}} \right)^2\;,
+\end{equation}
 where $\sigma_\epsilon$ is the dispersion if the complex ellipticity, and $\bar{n}$ the mean number density of the source galaxy sample.
 
 
-
+% -------------------------------------------------------------------
 \subsection{Halo mass function}
 \citet{lima2004} present the probability distribution of the cluster number counts.
 
-
+% -------------------------------------------------------------------
 \subsection{Dependence on mass density phases} % (fold)
 \label{sub:dependence_on_mass_density_phases}
 We need to calculate the shear two-point function $\xi(\skyangle, \rhoic)$, 
@@ -184,6 +252,7 @@ of the mass density, we primarily care about the phases of the super-survey
 modes. This is the `super-sample covariance' discussed by 
 \citet{takada2013}.
 
+% -------------------------------------------------------------------
 \subsubsection{Power spectrum fluctuations}
 We're really interested in how the 3D mass density fluctuations change the
 shear correlation function, the halo mass function, \emph{and their 
