@@ -20,6 +20,7 @@
 \newcommand{\hkpc}{$h^{-1}$kpc}
 \newcommand{\kv}{\mathbf{k}}
 \newcommand{\xv}{\mathbf{x}}
+\newcommand{\phiv}{\vec{\phi}}
 % \newcommand{\begin{equation}}{\begin{equation}}
 % \newcommand{\end{equation}}{\end{equation}}
 
@@ -66,17 +67,23 @@ Something or other.
 \end{abstract}
 
 % -------------------------------------------------------------------
-\section{Introduction}
+\section{Motivation from the hack day}
 
-Sarah will fill this in.  Rely on picture of first board and top of second board as well as our
-discussions.  Actually I'm not sure how much info we need here, since 2.1 steps through the basic
-idea.  Skip this?
-
-% -------------------------------------------------------------------
-\section{Math}
+Why does overlapping volume in two surveys potentially help us reduce sample variance?
+This section describes our line of thinking from the 2014-02-06 hack day. 
+But, much of this derivation may ultimately be only loosely related to the examples
+we calculate in Section~\ref{sec:joint_probes}.
 
 % -------------------------------------------------------------------
 \subsection{Basic framework}
+Quite generally, we can think of the likelihood of some cosmological probe data $\data$ given cosmological 
+parameters $\theta$ as a marginalization over the particular mass density realizations in the universe $\rho$.
+That is, we usually only constrain cosmology from statistics such as the power spectrum or correlation 
+function that average over the phases of the mass density perturbations. This is because, under the model 
+of inflation, mass density perturbations are random fluctuations with a power spectrum (only) that depends 
+on the cosmological model.
+
+We can write the marginal likelihood as,
 \begin{equation}
 	P(\data|\theta) = \int \mathrm{d}\rho^\text{IC}\int \mathrm{d}\rho(t) P(\data|\rho(t),\theta)
 	P(\rho(t)|\rho^\text{IC},\theta) P(\rho^\text{IC}|\theta).
@@ -147,54 +154,9 @@ where $P(\theta)$ is the prior. Another useful figure of merit is
 for any parameter $i$. A generalised metric could be based on the ratio of the determinants of the parameter covariances.
 
 
-
-\subsection{An example case}
-
-We begin by asserting,
-\begin{align}
-	P(\rhoic | \theta) &\equiv \normdist_{\rhoic}(0, \smat(\theta))
-	\\
-	P(\data | \rhoic, \theta) &\equiv
-	\normdist_{\data}\left(\transfer_{\data}(\theta)\rhoic, \noisemat_{\data}\right)
-	\\
-	P(\dataext | \rhoic, \theta) &\equiv
-	\normdist_{\dataext}\left(\transfer_{\dataext}(\theta)\rhoic, \noisemat_{\dataext}\right),
-\end{align}
-where $\transfer$ is a transfer function that relates the initial mass density $\rhoic$ 
-to the data vector and $\noisemat$ are noise covariance matrices.
-
-Without any external data,
-\begin{align}
-	P(\data|\theta) &= 
-	\int d\rhoic\, P(\data | \rhoic,\theta) P(\rhoic|\theta)
-	\notag\\
-	&\propto \int d\rhoic\, 
-	% \left|\smat\right|^{-1/2} \left|\noisemat_{\data}\right|^{-1/2}
-	% \exp \left(-\half\left(\rhoic\right)\smat^{-1}\left(\rhoic\right)\right)
-	\normdist_{\rhoic} \left(
-	\invtransfer_{\data} \data,
-	\left(\transfer_{\data}^{T} \noisemat_{\data}^{-1} \transfer_{\data}\right)^{-1}
-	\right)
-	\normdist_{\rhoic} \left(
-	0, \smat
-	\right)
-	\notag\\
-	&= \normdist_{\data} \left(
-	0,
-	\transfer^{T}_{\data}
-	\left(
-	\smat +
-	\left(\transfer_{\data}^{T} \noisemat_{\data}^{-1} \transfer_{\data}\right)^{-1}
-	\right)
-	\transfer_{\data}
-	\right)
-\end{align}
-where $\invtransfer \equiv \transfer^{-1}$.
-This gives us the usual sample covariance plus noise covariance model for unbiased 
-tracers of the Gaussian density field.
-
 % -------------------------------------------------------------------
-\subsection{An example case in the nonlinear regime}
+\section{Joint probes with common background density fluctuation} % (fold)
+\label{sec:joint_probes}
 
 We are going to consider the case that the data vector is cosmic shear
 \begin{equation}
@@ -220,18 +182,20 @@ that Sukhdeep found.
 Likewise,
 \begin{equation}
 	P(\dataext|\rho^\text{IC},\theta) = N(\hat{n}_\text{clust}(M>M_\text{min} |
-	\rho^\text{IC}), \text{uncertainty based on cluster detection method}).
+	\rho^\text{IC}), \text{uncertainty based on cluster detection method}),
 \end{equation}
-We need to figure out that uncertainty.
+where the uncertainty in the cluster number counts can be determined if we assume Poisson 
+errors.
 
 Then we can write
 \begin{equation}
 	P(\data|\rho^\text{IC},\theta)P(\dataext|\rho^\text{IC},\theta)P(\rho^\text{IC}|\theta)
-	\propto P(\rho^\text{IC}|\data,\dataext,\theta)
+	= 
+	P(\rho^\text{IC}, \data,\dataext| \theta)
 \end{equation}
 \begin{equation}
-	\int \mathrm{d}\rho^\text{IC} P(\rho^\text{IC}|\data,\dataext,\theta) = P(\data|\theta,
-	\dataext).
+	\int \mathrm{d}\rho^\text{IC} P(\rho^\text{IC}, \data,\dataext |\theta) 
+	= P(\data, \dataext | \theta).
 \end{equation}
 
 
@@ -272,23 +236,55 @@ shear correlation function, the halo mass function, \emph{and their
 cross-covariances}. But, we can make a reasonable simplifying assumption that 
 the effect of un-marginalized mass density fluctuations is to change the mean density 
 in an observed survey volume. 
+
+\citet{takada2013} introduce the Taylor expansion,
 \begin{equation}
 	P(k) \rightarrow P(k) \left(
-	1 + \frac{\partial \ln P(k)}{\partial \delta_b} \delta_b\right)
+	1 + \frac{\partial \ln P(k)}{\partial \delta_b} \delta_b\right),
 \end{equation}
+for a `background' density fluctuation $\delta_b$.
 
+We can define the background fluctuation as an integral of the 
+mass density perturbation over the survey window $W^{(i)}_{\alpha}$ for  
+probe $\alpha$ (e.g., shear or cluster counts) and tomographic bin $i$,
 \begin{equation}
-	\delta_b \sim \normdist
-	\left(0, \left(\sigma_W^L\right)^{2}\right)
+	\delta_{b,\alpha}^{(i)} \equiv \frac{1}{V_{W_{\alpha}^{(i)}}}
+	\int d^{2}\phiv \int d\chi\,
+	\int \frac{d^{3}k}{(2\pi)^3}\,
+	e^{i \kv\cdot(\chi\phiv, \chi)}
+	W^{(i)}_{\alpha}(\kv, \chi) \delta(\kv, \chi),
 \end{equation}
-where,
-\begin{equation}
-	\left(\sigma_{W}^{L}\right)^{2} \equiv
-	\frac{1}{V_{W}^{2}} 
-	\int \frac{d^{2}\kv}{(2\pi)^3}
-	\left|W(\kv)\right|^{2}
-	P^{L}(k).
-\end{equation}
+where $\chi$ is the comoving line-of-sight distance and $\phiv$ is the 
+angular position on the sky. The $\chi$ arguments in the window function 
+and density perturbation account for evolution over the observed light-cone.
+
+If the survey volume is large enough so that the 
+largest density modes that fit in the survey are in the linear regime, 
+then $\delta_{b,\alpha}$ should be approximately Gaussian distributed 
+with zero mean and covariance,
+\begin{align}
+	\left<\delta_{b,\alpha}^{(i)} \delta_{b,\beta}^{(j)}\right> &=
+	\frac{1}{V_{W_{\alpha}^{(i)}} V_{W_{\beta}^{(j)}}}
+	\int d\chi\, 
+	\int \frac{d^{3}k}{(2\pi)^3}\,
+	W^{(i)}_{\alpha}(\kv, \chi) W^{(j)}_{\beta}(\kv,\chi) P^{\rm lin}(\kv,\chi) 
+	(some\,bessel\,function\,TBD)
+\end{align}
+where we made the standard Limber integral approximations to collapse the 
+integrals over separate line-of-sight distances.
+
+% \begin{equation}
+% 	\delta_b \sim \normdist
+% 	\left(0, \left(\sigma_W^L\right)^{2}\right)
+% \end{equation}
+% where,
+% \begin{equation}
+% 	\left(\sigma_{W}^{L}\right)^{2} \equiv
+% 	\frac{1}{V_{W}^{2}} 
+% 	\int \frac{d^{2}\kv}{(2\pi)^3}
+% 	\left|W(\kv)\right|^{2}
+% 	P^{L}(k).
+% \end{equation}
 
 For the 2-halo term~\citep[eq. 39 of][]{takada2013}, 
 \begin{equation}
@@ -319,6 +315,8 @@ specified mass threshold $\mth$,
 \end{equation}
 
 % subsection dependence_on_mass_density_phases (end)
+
+% section joint_probes_with_common_background_density_fluctuation (end)
 
 \bibliographystyle{apj}
 \bibliography{noSampleVariance}
