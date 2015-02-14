@@ -63,9 +63,216 @@
 
 \author{A bunch of DESC hackers}
 \begin{abstract}
-Something or other.
+Most cosmological parameter inferences are now limited by sample variance rather than 
+observational measurement errors. \citet{takada2013} showed that the dominant contribution 
+to the sample variance of two-point statistics of cosmological density perturbations is from 
+fluctuations in the mean density in observed survey volumes. 
+We show that the mean density perturbation in a given volume can be constrained with a combination of 
+cosmological probes to both reduce the sample variance uncertainties and add additional 
+cosmological information about super-survey density perturbations.
 \end{abstract}
 
+
+
+% -------------------------------------------------------------------
+\section{Joint probes with common background density fluctuation} % (fold)
+\label{sec:joint_probes}
+
+Consider a measurement of the cosmic shear angular power spectrum,
+\begin{equation}
+	%\data = \hat{\xi}_+(\phi)
+	\data \equiv \hat{C}_{\ell},
+\end{equation}
+for multipoles $\ell$.
+We will consider how the background density contributing to the sample variance 
+uncertainties in $\hat{C}_{\ell}$ can be constrained by the 
+addition of cluster number counts in the same survey volume,
+\begin{equation}
+	\dataext \equiv \hat{n}_\text{clust}(M>M_\text{min} | \rho^\text{IC}) =
+	\int_{M_\text{min}}^{\infty} n(M)\,\mathrm{d}M.
+\end{equation}
+
+Assuming the dominant measurement error on the cosmic shear power spectrum is from shape noise,
+the likelihood function is a multivariate Gaussian distribution (denoted by $\normdist({\rm mean}, {\rm covariance})$),
+\begin{equation}
+	P(\data|\rho^\text{IC},\theta) = \normdist(C_{\ell}(\rho^\text{IC},\theta), \Sigma_{\gamma}),
+\end{equation}
+where we have included explicit dependence on the mass density initial conditions $\rho^\text{IC}$ 
+and cosmological parameters $\theta$.
+Here it's important to keep in mind that this is not $\bar{C}_{\ell}$, the expected average correlation
+function for a given cosmology.  It is the specific $C_{\ell}$ {\em for the given set of ICs}. The
+covariance $\Sigma_{\gamma}$ is just shape noise.  {\it For simplicity we might consider halo model
+approximations for the 1-halo and 2-halo terms for the cosmic shear as written in the Mo et al. book
+that Sukhdeep found.}
+
+Likewise,
+\begin{equation}
+	P(\dataext|\rho^\text{IC},\theta) \approx \normdist(n_\text{clust}(M>M_\text{min} |
+	\rho^\text{IC}), \smat(\theta)),
+\end{equation}
+where the covariance is determined by the linear power spectrum and we assume the number of clusters 
+is large enough that the Poisson statistics can be approximated by a Gaussian distribution.
+
+Then we can write
+\begin{equation}
+	P(\data|\rho^\text{IC},\theta)P(\dataext|\rho^\text{IC},\theta)P(\rho^\text{IC}|\theta)
+	= 
+	P(\rho^\text{IC}, \data,\dataext| \theta)
+\end{equation}
+\begin{equation}
+	\int \mathrm{d}\rho^\text{IC} P(\rho^\text{IC}, \data,\dataext |\theta) 
+	= P(\data, \dataext | \theta).
+\end{equation}
+
+
+% -------------------------------------------------------------------
+\subsection{Cosmic shear likelihood}
+
+\begin{equation}
+- \ln L = \frac{1}{2}\; \sum_{i,j=1}^{N_\ell} \left(  \hat{C}(\ell_i) - C_{\rm model}(\ell_i) \right)\; {\rm Cov}^{-1}\{  C(\ell_i), C(\ell_j) \}\; \left(  \hat{C}(\ell_j) - C_{\rm model}(\ell_j) \right)\;,
+\end{equation}
+where $N_\ell$ is the number of angular frequency bins.
+
+\begin{equation}
+{\rm Cov}\{  C(\ell_i), C(\ell_j) \}= \delta_{ij}\; \frac{4 \pi}{A_{\rm survey} \ell_i \Delta \ell}\; \left( C(\ell_i) + \frac{\sigma_\epsilon^2}{2 \bar{n}} \right)^2\;,
+\end{equation}
+where $\sigma_\epsilon$ is the dispersion if the complex ellipticity, and $\bar{n}$ the mean number density of the source galaxy sample.
+
+
+% -------------------------------------------------------------------
+\subsection{Halo mass function}
+\citet{lima2004} present the probability distribution of the cluster number counts.
+
+% -------------------------------------------------------------------
+\subsection{Dependence on mass density phases} % (fold)
+\label{sub:dependence_on_mass_density_phases}
+We need to calculate the shear two-point function $\xi(\skyangle, \rhoic)$, 
+the halo mass function $n(m, \rhoic)$
+and the halo bias $b(m, \rhoic)$ as functions of the initial conditions of the 
+cosmological mass density $\rhoic$. 
+Because the traditional two-point function estimator averages over the phases 
+of the mass density, we primarily care about the phases of the super-survey 
+modes. This is the `super-sample covariance' discussed by 
+\citet{takada2013}.
+
+% -------------------------------------------------------------------
+\subsubsection{Power spectrum fluctuations}
+We're really interested in how the 3D mass density fluctuations change the
+shear correlation function, the halo mass function, \emph{and their 
+cross-covariances}. But, we can make a reasonable simplifying assumption that 
+the effect of un-marginalized mass density fluctuations is to change the mean density 
+in an observed survey volume. 
+
+\citet{takada2013} introduce the Taylor expansion,
+\begin{equation}\label{eq:power_perturbation}
+	P(k) \rightarrow P(k) \left(
+	1 + \frac{\partial \ln P(k)}{\partial \delta_b} \delta_b\right),
+\end{equation}
+for a `background' density fluctuation $\delta_b$.
+
+For the 2-halo term~\citep[eq. 39 of][]{takada2013} the response of the power spectrum 
+to a background fluctuation is approximately a constant, 
+\begin{equation}
+	\frac{\partial \ln P(k)}{\partial \delta_b} \approx 
+	\frac{68}{21}.
+\end{equation}
+
+We can define the background fluctuation as an integral of the 
+mass density perturbation over the survey window $W^{(i)}_{\alpha}$ for  
+probe $\alpha$ (e.g., shear or cluster counts) and tomographic bin $i$,
+\begin{equation}
+	\delta_{b,\alpha}^{(i)} \equiv \frac{1}{V_{W_{\alpha}^{(i)}}}
+	\int d^{2}\phiv \int d\chi\,
+	\int \frac{d^{3}k}{(2\pi)^3}\,
+	e^{i \kv\cdot(\chi\phiv, \chi)}
+	W^{(i)}_{\alpha}(\kv, \chi) \delta(\kv, \chi),
+\end{equation}
+where $\chi$ is the comoving line-of-sight distance and $\phiv$ is the 
+angular position on the sky. The $\chi$ arguments in the window function 
+and density perturbation account for evolution over the observed light-cone.
+
+If the survey volume is large enough so that the 
+largest density modes that fit in the survey are in the linear regime, 
+then $\delta_{b,\alpha}$ should be approximately Gaussian distributed 
+with zero mean and covariance,
+\begin{align}\label{eq:delta_b_cov}
+	\left<\delta_{b,\alpha}^{(i)} \delta_{b,\beta}^{(j)}\right> &=
+	\frac{A}{4V_{W_{\alpha}^{(i)}} V_{W_{\beta}^{(j)}}}
+	\int d\chi\, 
+	\int \frac{d^{3}k}{(2\pi)^3}\,
+	W^{(i)}_{\alpha}(\kv, \chi) W^{(j)}_{\beta}(\kv,\chi) P^{\rm lin}(\kv,\chi) 
+	\int_{0}^{\eta_{\rm max}} \eta\, d\eta\, J_{0}(k\chi\eta)
+\end{align}
+where we made the standard Limber integral approximations to collapse the 
+integrals over separate line-of-sight distances, $A$ is the total sky area of the 
+two surveys, and $\eta_{\rm max}$ is the maximum angular scale probed by the 
+overlap of the two surveys in the sky.
+{\bf TODO: double check the prefactors in this expression.}
+
+We might recognize an angular correlation function from Equation~\ref{eq:delta_b_cov},
+\begin{equation}
+	w_{\alpha\beta}^{(i,j)}(\eta) \equiv 
+	\int d\chi\, \int \frac{d^3k}{(2\pi)^3}
+	W^{(i)}_{\alpha}(\kv, \chi) W^{(j)}_{\beta}(\kv,\chi) P^{\rm lin}(\kv,\chi) J_{0}(k\chi\eta).
+\end{equation}
+Although the use of the survey window functions here is  different 
+from the standard angular correlation function definitions.
+Then,
+\begin{equation}
+	\left<\delta_{b,\alpha}^{(i)} \delta_{b,\beta}^{(j)}\right> =
+	\frac{A}{4V_{W_{\alpha}^{(i)}} V_{W_{\beta}^{(j)}}}
+	\int_{0}^{\eta_{\rm max}} \eta\,d\eta\, w^{(i,j)}_{\alpha\beta}(\eta).
+\end{equation}
+A simple approximation to the covariance of $\delta_b$ might then be 
+the integral of the angular correlation function derived from the linear 
+power spectrum.
+
+% \begin{equation}
+% 	\delta_b \sim \normdist
+% 	\left(0, \left(\sigma_W^L\right)^{2}\right)
+% \end{equation}
+% where,
+% \begin{equation}
+% 	\left(\sigma_{W}^{L}\right)^{2} \equiv
+% 	\frac{1}{V_{W}^{2}} 
+% 	\int \frac{d^{2}\kv}{(2\pi)^3}
+% 	\left|W(\kv)\right|^{2}
+% 	P^{L}(k).
+% \end{equation}
+
+
+
+\subsubsection{Cluster counts fluctuations}
+The number density of clusters of a given mass $m$ and redshift $z$ over the 
+sky can be approximated as,
+\begin{equation}
+	n_{h}(\xv, m, z) \approx \nbar_{h}(m, z)
+	\left[1 + b_{h}(m,z) \delta(\xv, z)\right],
+\end{equation}
+where $b_{h}(m,z)$ is the linear halo bias and
+$\delta(\xv,z)$ is the mass overdensity.
+
+We will use observations of the number of clusters above a 
+specified mass threshold $\mth$,
+\begin{equation}
+	\bar{N}(z) \equiv
+	\int_{\mth}^{\infty} dm\, 
+	\nbar_{h}(m,z)
+	\left[
+	1 + b_{h}(m,z)
+	\int d^{3}x\, W(\xv) \delta(\xv)
+	\right]
+\end{equation}
+
+% subsection dependence_on_mass_density_phases (end)
+
+% section joint_probes_with_common_background_density_fluctuation (end)
+
+\bibliographystyle{apj}
+\bibliography{noSampleVariance}
+
+
+\appendix
 % -------------------------------------------------------------------
 \section{Motivation from the hack day}
 
@@ -153,173 +360,6 @@ where $P(\theta)$ is the prior. Another useful figure of merit is
 \end{equation}
 for any parameter $i$. A generalised metric could be based on the ratio of the determinants of the parameter covariances.
 
-
-% -------------------------------------------------------------------
-\section{Joint probes with common background density fluctuation} % (fold)
-\label{sec:joint_probes}
-
-We are going to consider the case that the data vector is cosmic shear
-\begin{equation}
-	%\data = \hat{\xi}_+(\phi)
-	\data = \hat{C}(\ell)
-\end{equation}
-and the external data are the counts of clusters above a mass threshold
-\begin{equation}
-	\dataext = \hat{n}_\text{clust}(M>M_\text{min} | \rho^\text{IC}) =
-	\int_{M_\text{min}}^{\infty} n(M)\,\mathrm{d}M.
-\end{equation}
-
-In this case,
-\begin{equation}
-	P(\data|\rho^\text{IC},\theta) = N(\xi_+(G(\rho^\text{IC},\theta), \phi), \sigma^2_\gamma(\phi)).
-\end{equation}
-Here it's important to keep in mind that this is not $\bar{\xi}_+(\phi)$, the expected average correlation
-function for a given cosmology.  It is the specific $\xi_+(\phi)$ {\em for the given set of ICs}. The
-variance $\sigma^2_\gamma(\phi)$ is just shape noise.  For simplicity we might consider halo model
-approximations for the 1-halo and 2-halo terms for the cosmic shear as written in the Mo et al. book
-that Sukhdeep found.  
-
-Likewise,
-\begin{equation}
-	P(\dataext|\rho^\text{IC},\theta) = N(\hat{n}_\text{clust}(M>M_\text{min} |
-	\rho^\text{IC}), \text{uncertainty based on cluster detection method}),
-\end{equation}
-where the uncertainty in the cluster number counts can be determined if we assume Poisson 
-errors.
-
-Then we can write
-\begin{equation}
-	P(\data|\rho^\text{IC},\theta)P(\dataext|\rho^\text{IC},\theta)P(\rho^\text{IC}|\theta)
-	= 
-	P(\rho^\text{IC}, \data,\dataext| \theta)
-\end{equation}
-\begin{equation}
-	\int \mathrm{d}\rho^\text{IC} P(\rho^\text{IC}, \data,\dataext |\theta) 
-	= P(\data, \dataext | \theta).
-\end{equation}
-
-
-% -------------------------------------------------------------------
-\subsection{Cosmic shear likelihood}
-
-\begin{equation}
-- \ln L = \frac{1}{2}\; \sum_{i,j=1}^{N_\ell} \left(  \hat{C}(\ell_i) - C_{\rm model}(\ell_i) \right)\; {\rm Cov}^{-1}\{  C(\ell_i), C(\ell_j) \}\; \left(  \hat{C}(\ell_j) - C_{\rm model}(\ell_j) \right)\;,
-\end{equation}
-where $N_\ell$ is the number of angular frequency bins.
-
-\begin{equation}
-{\rm Cov}\{  C(\ell_i), C(\ell_j) \}= \delta_{ij}\; \frac{4 \pi}{A_{\rm survey} \ell_i \Delta \ell}\; \left( C(\ell_i) + \frac{\sigma_\epsilon^2}{2 \bar{n}} \right)^2\;,
-\end{equation}
-where $\sigma_\epsilon$ is the dispersion if the complex ellipticity, and $\bar{n}$ the mean number density of the source galaxy sample.
-
-
-% -------------------------------------------------------------------
-\subsection{Halo mass function}
-\citet{lima2004} present the probability distribution of the cluster number counts.
-
-% -------------------------------------------------------------------
-\subsection{Dependence on mass density phases} % (fold)
-\label{sub:dependence_on_mass_density_phases}
-We need to calculate the shear two-point function $\xi(\skyangle, \rhoic)$, 
-the halo mass function $n(m, \rhoic)$
-and the halo bias $b(m, \rhoic)$ as functions of the initial conditions of the 
-cosmological mass density $\rhoic$. 
-Because the traditional two-point function estimator averages over the phases 
-of the mass density, we primarily care about the phases of the super-survey 
-modes. This is the `super-sample covariance' discussed by 
-\citet{takada2013}.
-
-% -------------------------------------------------------------------
-\subsubsection{Power spectrum fluctuations}
-We're really interested in how the 3D mass density fluctuations change the
-shear correlation function, the halo mass function, \emph{and their 
-cross-covariances}. But, we can make a reasonable simplifying assumption that 
-the effect of un-marginalized mass density fluctuations is to change the mean density 
-in an observed survey volume. 
-
-\citet{takada2013} introduce the Taylor expansion,
-\begin{equation}
-	P(k) \rightarrow P(k) \left(
-	1 + \frac{\partial \ln P(k)}{\partial \delta_b} \delta_b\right),
-\end{equation}
-for a `background' density fluctuation $\delta_b$.
-
-We can define the background fluctuation as an integral of the 
-mass density perturbation over the survey window $W^{(i)}_{\alpha}$ for  
-probe $\alpha$ (e.g., shear or cluster counts) and tomographic bin $i$,
-\begin{equation}
-	\delta_{b,\alpha}^{(i)} \equiv \frac{1}{V_{W_{\alpha}^{(i)}}}
-	\int d^{2}\phiv \int d\chi\,
-	\int \frac{d^{3}k}{(2\pi)^3}\,
-	e^{i \kv\cdot(\chi\phiv, \chi)}
-	W^{(i)}_{\alpha}(\kv, \chi) \delta(\kv, \chi),
-\end{equation}
-where $\chi$ is the comoving line-of-sight distance and $\phiv$ is the 
-angular position on the sky. The $\chi$ arguments in the window function 
-and density perturbation account for evolution over the observed light-cone.
-
-If the survey volume is large enough so that the 
-largest density modes that fit in the survey are in the linear regime, 
-then $\delta_{b,\alpha}$ should be approximately Gaussian distributed 
-with zero mean and covariance,
-\begin{align}
-	\left<\delta_{b,\alpha}^{(i)} \delta_{b,\beta}^{(j)}\right> &=
-	\frac{1}{V_{W_{\alpha}^{(i)}} V_{W_{\beta}^{(j)}}}
-	\int d\chi\, 
-	\int \frac{d^{3}k}{(2\pi)^3}\,
-	W^{(i)}_{\alpha}(\kv, \chi) W^{(j)}_{\beta}(\kv,\chi) P^{\rm lin}(\kv,\chi) 
-	(some\,bessel\,function\,TBD)
-\end{align}
-where we made the standard Limber integral approximations to collapse the 
-integrals over separate line-of-sight distances.
-
-% \begin{equation}
-% 	\delta_b \sim \normdist
-% 	\left(0, \left(\sigma_W^L\right)^{2}\right)
-% \end{equation}
-% where,
-% \begin{equation}
-% 	\left(\sigma_{W}^{L}\right)^{2} \equiv
-% 	\frac{1}{V_{W}^{2}} 
-% 	\int \frac{d^{2}\kv}{(2\pi)^3}
-% 	\left|W(\kv)\right|^{2}
-% 	P^{L}(k).
-% \end{equation}
-
-For the 2-halo term~\citep[eq. 39 of][]{takada2013}, 
-\begin{equation}
-	\frac{\partial \ln P(k)}{\partial \delta_b} \approx 
-	\frac{68}{21}
-\end{equation}
-
-\subsubsection{Cluster counts fluctuations}
-The number density of clusters of a given mass $m$ and redshift $z$ over the 
-sky can be approximated as,
-\begin{equation}
-	n_{h}(\xv, m, z) \approx \nbar_{h}(m, z)
-	\left[1 + b_{h}(m,z) \delta(\xv, z)\right],
-\end{equation}
-where $b_{h}(m,z)$ is the linear halo bias and
-$\delta(\xv,z)$ is the mass overdensity.
-
-We will use observations of the number of clusters above a 
-specified mass threshold $\mth$,
-\begin{equation}
-	\bar{N}(z) \equiv
-	\int_{\mth}^{\infty} dm\, 
-	\nbar_{h}(m,z)
-	\left[
-	1 + b_{h}(m,z)
-	\int d^{3}x\, W(\xv) \delta(\xv)
-	\right]
-\end{equation}
-
-% subsection dependence_on_mass_density_phases (end)
-
-% section joint_probes_with_common_background_density_fluctuation (end)
-
-\bibliographystyle{apj}
-\bibliography{noSampleVariance}
 
 \end{document}
 % 
