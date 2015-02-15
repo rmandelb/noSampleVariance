@@ -3,6 +3,11 @@
 %=====================================================================
 % CUSTOM: PACKAGES, MACROS & SETTINGS
 %=====================================================================
+\usepackage[textsize=small]{todonotes} % For comments on things to code up
+\newcommand{\wpone}[1]{\todo[inline, color=orange!40]{#1}}
+\newcommand{\wptwo}[1]{\todo[inline, color=green!40]{#1}}
+\newcommand{\wpthree}[1]{\todo[inline, color=blue!40]{#1}}
+\newcommand{\wpfour}[1]{\todo[inline, color=yellow!40]{#1}}
 
 % packages for figures
 \usepackage{graphicx}
@@ -10,6 +15,8 @@
 \usepackage{latexsym,amssymb}
 % AMS-LaTeX package for e.g. subequations
 \usepackage{amsmath}
+% Bold greek symbols
+\usepackage{bm}
 
 % \newcommand{\begin{equation}}{\begin{equation}} 
 % \newcommand{\end{equation}}{\end{equation}}
@@ -41,11 +48,15 @@
 %%% Signal covariance matrix
 \newcommand{\smat}{\mathsf{S}}
 %%% Noise covariance matrix
-\newcommand{\noisemat}{\mathsf{\Sigma}}
+\newcommand{\noisemat}{\mathsf{N}}
+%%% Generic covariance matrix
+\newcommand{\Sigmamat}{\mathsf{\Sigma}}
 %%% Transfer function relating the mass density to the data vector
 \newcommand{\transfer}{\mathsf{T}}
 %%% Inverse transfer function operator
 \newcommand{\invtransfer}{\mathsf{R}}
+%%% Parameter vector of delta_b 
+\newcommand{\deltabvec}{\bm \delta_{b}}
 
 
 %=====================================================================
@@ -176,6 +187,7 @@ to a background fluctuation is approximately a constant,
 	\frac{\partial \ln P(k)}{\partial \delta_b} \approx 
 	\frac{68}{21}.
 \end{equation}
+\wpthree{WP3: modify the matter power spectrum with $\delta_b$ value and implement power spectrum derivative with respect to $\delta_b$.}
 
 We can define the background fluctuation as an integral of the 
 mass density perturbation over the survey window $W^{(i)}_{\alpha}$ for  
@@ -227,19 +239,6 @@ A simple approximation to the covariance of $\delta_b$ might then be
 the integral of the angular correlation function derived from the linear 
 power spectrum.
 
-% \begin{equation}
-% 	\delta_b \sim \normdist
-% 	\left(0, \left(\sigma_W^L\right)^{2}\right)
-% \end{equation}
-% where,
-% \begin{equation}
-% 	\left(\sigma_{W}^{L}\right)^{2} \equiv
-% 	\frac{1}{V_{W}^{2}} 
-% 	\int \frac{d^{2}\kv}{(2\pi)^3}
-% 	\left|W(\kv)\right|^{2}
-% 	P^{L}(k).
-% \end{equation}
-
 
 
 \subsubsection{Cluster counts fluctuations}
@@ -253,20 +252,47 @@ where $b_{h}(m,z)$ is the linear halo bias and
 $\delta(\xv,z)$ is the mass overdensity.
 
 We will use observations of the number of clusters above a 
-specified mass threshold $\mth$,
+specified mass threshold $\mth$\wptwo{WP2: Calculate number counts given mass function and $\delta_b$},
 \begin{equation}
-	\bar{N}(z) \equiv
+	\bar{N}_{\alpha}^{(i)}(z) \equiv
 	\int_{\mth}^{\infty} dm\, 
 	\nbar_{h}(m,z)
 	\left[
 	1 + b_{h}(m,z)
-	\int d^{3}x\, W(\xv) \delta(\xv)
+	\int d^{3}x\, W_{\alpha}^{(i)}(\xv) \delta(\xv)
 	\right]
 \end{equation}
 
 % subsection dependence_on_mass_density_phases (end)
 
 % section joint_probes_with_common_background_density_fluctuation (end)
+
+\section{Analysis} % (fold)
+\label{sec:analysis}
+When inferring cosmological parameters from our joint probes we need to marginalize 
+$\delta_{b,\alpha}^{(i)}$ (for all $i$ and $\alpha$). 
+To account for common density modes among different probes in (partially) overlapping volumes, 
+we can append all $\delta_{b,\alpha}^{(i)}$ parameters to the list of cosmological parameters 
+and do a joint inference. By drawing joint posterior samples with MCMC, we can obtain marginal 
+inferences on the cosmological parameters by simply discarding the posterior samples of $\delta_{b,\alpha}^{(i)}$.
+
+Equation~\ref{eq:delta_b_cov} shows that the expected variance of $\delta_{b,\alpha}^{(i)}$ 
+depends on the matter power spectrum, and thus cosmology. Also, because the mass density perturbations 
+are Gaussian distributed on large scales, we are justified in placing a 
+multivariate Gaussian prior\wpone{WP1 CosmoSIS module: Prior on $\delta_b$ parameter vector. 1) Compute covariance from power spectrum and 2) evaluate ln-prior for sampling.} on 
+the parameter vector,
+\begin{equation}
+	\deltabvec \equiv \left\{\delta_{b,\alpha}^{(i)}; \alpha=1,\dots,N_{\rm probes}, 
+	i=1,\dots,N_{\rm z-bins}\right\},
+\end{equation}
+\begin{equation}
+	P(\deltabvec | \theta) = \normdist \left(0, \Sigmamat_{\delta_b}(\theta)\right),
+\end{equation}
+where the elements of $\Sigmamat_{\delta_b}$ are defined by Equation~\ref{eq:delta_b_cov}.
+Crucially, we include the cross-covariances of all $\delta_b$ parameters as determined from 
+the Fourier-space overlaps of the survey window functions.
+
+% section analysis (end)
 
 \bibliographystyle{apj}
 \bibliography{noSampleVariance}
