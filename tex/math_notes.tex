@@ -57,7 +57,12 @@
 \newcommand{\invtransfer}{\mathsf{R}}
 %%% Parameter vector of delta_b 
 \newcommand{\deltabvec}{\bm \delta_{b}}
-
+%%% Mean number of clusters above a threshold
+\newcommand{\nclust}{N}
+%%% Observed cluster number counts
+\newcommand{\nhatclust}{\hat{N}}
+%%% Minimum mass threshold for cluster counting
+\newcommand{\Mmin}{M_\text{min}}
 
 %=====================================================================
 % FRONT MATTER
@@ -99,7 +104,7 @@ We will consider how the background density contributing to the sample variance
 uncertainties in $\hat{C}_{\ell}$ can be constrained by the 
 addition of cluster number counts in the same survey volume,
 \begin{equation}
-	\dataext \equiv \hat{n}_\text{clust}(M>M_\text{min} | \rho^\text{IC}) =
+	\dataext \equiv \nhatclust(M>M_\text{min} | \rho^\text{IC}) =
 	\int_{M_\text{min}}^{\infty} n(M)\,\mathrm{d}M.
 \end{equation}
 
@@ -108,7 +113,7 @@ the likelihood function is a multivariate Gaussian distribution (denoted by $\no
 \begin{equation}
 	P(\data|\rho^\text{IC},\theta) = \normdist(C_{\ell}(\rho^\text{IC},\theta), \Sigma_{\gamma}),
 \end{equation}
-where we have included explicit dependence on the mass density initial conditions $\rho^\text{IC}$ 
+where we have included explicit dependence on the mass density initial conditions $\rhoic$ 
 and cosmological parameters $\theta$.
 Here it's important to keep in mind that this is not $\bar{C}_{\ell}$, the expected average correlation
 function for a given cosmology.  It is the specific $C_{\ell}$ {\em for the given set of ICs}. The
@@ -116,24 +121,24 @@ covariance $\Sigma_{\gamma}$ is just shape noise.  {\it For simplicity we might 
 approximations for the 1-halo and 2-halo terms for the cosmic shear as written in the Mo et al. book
 that Sukhdeep found.}
 
-Likewise,
+Assuming a sufficiently large number of observed clusters, the Poisson distribution 
+for the cluster number counts is well approximated by a Gaussian,
 \begin{equation}
-	P(\dataext|\rho^\text{IC},\theta) \approx \normdist(n_\text{clust}(M>M_\text{min} |
-	\rho^\text{IC}), \smat(\theta)),
+	P(\dataext|\rho^\text{IC},\theta) \approx \normdist(\nclust(M>M_\text{min} |
+	\rho^\text{IC}), {\rm diag}(\nclust)).
 \end{equation}
-where the covariance is determined by the linear power spectrum and we assume the number of clusters 
-is large enough that the Poisson statistics can be approximated by a Gaussian distribution.
 
-Then we can write
-\begin{equation}
-	P(\data|\rho^\text{IC},\theta)P(\dataext|\rho^\text{IC},\theta)P(\rho^\text{IC}|\theta)
-	= 
-	P(\rho^\text{IC}, \data,\dataext| \theta)
-\end{equation}
+For cosmological parameter inference we are interested in the marginal likelihood,
 \begin{equation}
 	\int \mathrm{d}\rho^\text{IC} P(\rho^\text{IC}, \data,\dataext |\theta) 
-	= P(\data, \dataext | \theta).
+	= P(\data, \dataext | \theta),
 \end{equation}
+where,
+\begin{equation}
+	P(\rho^\text{IC}, \data,\dataext| \theta) =
+	P(\data|\rho^\text{IC},\theta)P(\dataext|\rho^\text{IC},\theta)P(\rho^\text{IC}|\theta).
+\end{equation}
+
 
 
 % -------------------------------------------------------------------
@@ -151,8 +156,33 @@ where $\sigma_\epsilon$ is the dispersion if the complex ellipticity, and $\bar{
 
 
 % -------------------------------------------------------------------
-\subsection{Halo mass function}
-\citet{lima2004} present the probability distribution of the cluster number counts.
+\subsection{Cluster number count likelihood}
+The observed number of clusters $\nhatclust(M>\Mmin,\rhoic, V)$ above a minimum mass threshold 
+$\Mmin$ in a volume $V$ is Poisson distributed with mean $\nclust$,
+\begin{equation}
+	L(\nhatclust|\nclust(\Mmin, V, \rhoic)) = 
+	\frac{\nclust^{\nhatclust}}{\nhatclust!} 
+	e^{-\nclust}. 
+\end{equation}
+
+Following~\citet{lima2004}, the expected number of clusters in an observed volume with 
+particular mass density perturbations $\rhoic$ is, 
+\begin{equation}
+	\nclust(\Mmin, V, \rhoic) \equiv 
+	\int d^{3}x\, W(\xv) \int_{\Mmin}^{\infty} dM\, n(\xv, M, \rhoic),
+\end{equation}
+where $\xv$ describes 3D coordinates in the observable light-cone (so the 
+line-of-sight coordinate is the redshift-dependent distance),
+$W(\xv)$ is the survey window function and $n(\xv, M, \rhoic)$ is the
+halo mass function including perturbations from large-scale structure,
+\begin{equation}\label{eq:halo_counts}
+	n(\xv, M, \rhoic) \approx \bar{n}(M, z) \left(
+	1 + b(M, z) \delta(\xv, z; \rhoic)
+	\right).
+\end{equation}
+So, assuming a linear clustering bias of the halos, Eqn.~(\ref{eq:halo_counts}) gives the 
+explicit dependence of the observed cluster number counts on the initial conditions 
+via the density perturbation $\delta$ in the survey volume.
 
 % -------------------------------------------------------------------
 \subsection{Dependence on mass density phases} % (fold)
