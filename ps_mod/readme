@@ -1,0 +1,8 @@
+how to run:
+
+cosmosis demo6.ini
+postprocess grid_out.txt
+open ssc--delta_b.png
+
+parallel:
+mpirun -n 3 cosmosis --mpi demo6.ini

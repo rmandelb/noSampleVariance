@@ -1,0 +1,60 @@
+name: "Cluster counts module"
+version: "0.1"
+purpose: "Predict the number of galaxy clusters above a mass threshold in a volume with a given mass overdensity"
+url: ""
+attribution: []
+rules:
+    ""
+cite:
+    - ""
+    - ""
+
+assumptions:
+    - "Assume the cluster selection function can be described solely by a redshift-dependent lower halo mass threshold."
+    - "Neglect the redshift evolution of the mass function and halo bias over the width of each tomographic bin."
+
+explanation: >
+    "
+    For a given lower halo mass threshold, the predicted number of galaxy 
+    clusters in a survey volume is an integral over the halo mass function, 
+    weighted by the halo bias and clustering perturbations in the volume
+
+    This module takes the mass function and average over-density from the 
+    data block and integrates over halo mass and redshift.
+
+    When clusters are selected according to some observable criterion (e.g.,
+    richness, weak lensing mass estimate) then there is a non-trivial relation
+    between the observable and halo mass. Such a relationship can be partially
+    included in the model from this module by specifying a redshift-dependent
+    lower halo mass threshold. If Mth(z) exists in the datablock, this will 
+    be used instead of the redshift-independent Mth parameter. 
+    "
+
+# List of parameters that can go in the params.ini file in the section for this module    
+params:
+    Mth: "Lower halo mass threshold for counting clusters in M_sun/h (for all z)."
+    survey_area_sq_deg: "Total area of the survey footprint in square degrees."
+
+#Inputs for a given choice of a parameter, from the values.ini or from other modules
+#If no such choices, just do one of these omitting mode=something part:
+inputs:
+    survey:
+        window_function: "Survey window function in angle and redshift"
+
+# Take the mass function 2D array as a function of R and z because the 
+# analogous array as a function of halo mass M is not consistently implemented.
+# We do the conversion from radius R to M internal to this module.
+    mass_function:
+        r_h: "real 1D array, R in (h^-1 Mpc)"
+        dndlnrh: "real 2D array,  dn/dlnRh (h^3 Mpc^-3)"
+# TODO: Implement halo bias outputs from the mass function module(s)
+        bias: "real 2D array, halo bias as a function of M and z"
+
+    ssc:
+        z_bins: "real 1D array, mean redshifts of each redshift bin"
+        delta_b: "real 1D array, mass overdensities in redshift bins"
+
+outputs:
+    cluster_counts:
+        z: "real 1D array, mean redshifts of each tomographic bin"
+        counts: "real 1D array, mean number of clusters in each tomographic bin"
