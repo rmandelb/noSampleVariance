@@ -1,0 +1,14 @@
+#!/bin/bash
+commit_msg=$@
+if [ -z "$commit_msg" ]
+then
+  echo "not commit message... Bbye!!"
+  exit 1
+else
+  echo "commited with msg: $commit_msg"
+fi     # $String is null.
+
+
+git add --all
+git commit -m "$commit_msg"
+git push origin
