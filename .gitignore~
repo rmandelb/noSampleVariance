@@ -4,3 +4,5 @@ ps_mod/demo_output_1
 ps_mod/demo6_output
 *.png
 *.txt
+push.sh
+pull.sh

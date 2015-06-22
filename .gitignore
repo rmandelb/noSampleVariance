@@ -6,3 +6,4 @@ ps_mod/demo6_output
 *.txt
 push.sh
 pull.sh
+*~
