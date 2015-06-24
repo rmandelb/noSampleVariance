@@ -1,6 +1,6 @@
-how to run:
+how to run demo6 from cosmosis home directory:
 
-cosmosis demo6.ini
+cosmosis cosmosis-standard-library/noSampleVariance/ps_mod/demo6.ini
 postprocess grid_out.txt
 open ssc--delta_b.png
 
